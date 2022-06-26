@@ -1,15 +1,26 @@
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
-import org.testng.annotations.Test;
+
 
 import static com.codeborne.selenide.Selenide.*;
 
 public class SelenideTests {
+    @BeforeEach
+    public void start(){
+        open ("https://makeup.com.ua/");
+    }
 
     @Test
+    @DisplayName("Добавления продукта в корзину из выдачи")
     public void addingItemToTheCartFromListing(){ //Проверка добавления продукта в корзину из выдачи
-        open ("https://makeup.com.ua/");
         $(By.xpath("//input[@itemprop='query-input']")).click();
         $(By.xpath("//input[@itemprop='query-input']")).setValue("Givenchy").pressEnter();
         $(".catalog-products").scrollTo();
@@ -23,8 +34,8 @@ public class SelenideTests {
     }
 
     @Test
+    @DisplayName("Удаления продукта из корзины")
     public void removingProductFromTheCart(){ //Проверка удаления продукта из корзины
-        open ("https://makeup.com.ua/");
         $(By.xpath("//input[@itemprop='query-input']")).click();
         $(By.xpath("//input[@itemprop='query-input']")).setValue("Givenchy").pressEnter();
         $(".catalog-products").scrollTo();
@@ -45,11 +56,13 @@ public class SelenideTests {
         $(By.xpath("// div[@class='product__header'][contains(text(), 'Givenchy')]")).shouldBe(Condition.disappear);
     }
 
-    @Test
-    public void availabilityNotificationButton() { //Кнопка "Сообщить о наличии" для товара, которого нет в наличии
-        open ("https://makeup.com.ua/");
+
+    @ParameterizedTest
+    @ValueSource(strings = { "Jovial Luxe", "Mysylyn" })
+    @DisplayName("Кнопка 'Сообщить о наличии' активна")
+    public void availabilityNotificationButton(String brand) { //Кнопка "Сообщить о наличии" для товара, которого нет в наличии
         $(By.xpath("//input[@itemprop='query-input']")).click();
-        $(By.xpath("//input[@itemprop='query-input']")).setValue("Jovial Luxe").pressEnter();
+        $(By.xpath("//input[@itemprop='query-input']")).setValue(brand).pressEnter();
         $(By.xpath("//li[contains(@class,'out-of-stock')][last()]")).scrollTo();
         $(By.xpath("//li[contains(@class,'out-of-stock')][last()]//span[text()='Нет в наличии']")).isEnabled();
         $(By.xpath("//li[contains(@class,'out-of-stock')][last()]")).hover();
@@ -59,16 +72,17 @@ public class SelenideTests {
         $(By.xpath("//form[@data-popup='auth']")).shouldBe(Condition.appear);
     }
 
-    @Test
-    public void creatingCertificatePurchase(){ //Оформление покупки сертификата
-        open ("https://makeup.com.ua/");
+    @ParameterizedTest
+    @ValueSource(strings = { "250", "50000" })
+    @DisplayName("Оформление покупки сертификата")
+    public void creatingCertificatePurchase(String price){ //Оформление покупки сертификата
         $(By.xpath("//a[text()='Подарки']")).hover();
         $(By.xpath("//a[text()='Сертификаты']")).click();
         $(".catalog-products  li:first-child").click();
         $(By.xpath("//span [contains (@style, 'pxhob9twymua')]")).click();
         $(By.xpath("//textarea [@name='text-congratulation']")).setValue("Happy Birthday, my friend!");
         $(".sum-custom").click();
-        $(By.xpath("//input[@name='custom_price']")).setValue("5000").click();
+        $(By.xpath("//input[@name='custom_price']")).setValue(price).click();
         $(By.xpath("//input[@name='receiver_name_print']")).setValue("Kateryna");
         $(By.xpath("//input[@name='client_name']")).setValue("Iryna");
         $(By.xpath("//input[@name='client_last_name']")).setValue("Karden");
@@ -82,8 +96,9 @@ public class SelenideTests {
     }
 
     @Test
+    @RepeatedTest(2)
+    @DisplayName("Отображение лейбы Deal для акционного товара")
     public void labelDealIsDisplaying(){ //Отображение лейбы Deal для акционного товара
-        open ("https://makeup.com.ua/");
         $(By.xpath("//li[@class='header-top-list__item promoted']")).click();
         $(By.xpath("//div[@class='actions-list']/child::div[1]")).click();
         $(".catalog-products").scrollTo();

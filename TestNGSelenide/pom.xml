@@ -9,13 +9,21 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.6.0</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.0-M1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.codeborne/selenide -->
         <dependency>
             <groupId>com.codeborne</groupId>
